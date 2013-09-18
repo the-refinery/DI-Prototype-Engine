@@ -19,6 +19,8 @@ module.exports = function (grunt) {
         dist: 'dist'
     };
 
+    grunt.loadNpmTasks('grunt-ember-templates');
+
     grunt.initConfig({
         yeoman: yeomanConfig,
         watch: {
@@ -48,6 +50,10 @@ module.exports = function (grunt) {
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
+            },
+            ember_templates: {
+              files: '<%= yeoman.app %>/templates/**/*.handlebars',
+              tasks: ['ember_templates']
             }
         },
         connect: {
@@ -328,6 +334,18 @@ module.exports = function (grunt) {
             all: {
                 rjsConfig: '<%= yeoman.app %>/scripts/main.js'
             }
+        },
+        ember_templates: {
+          compile: {
+            options: {
+              templateName: function(sourceFile) {
+                return sourceFile.replace(/app\/templates\//, '');
+              }
+            },
+            files: {
+              "<%= yeoman.app %>/scripts/templates.js": ["<%= yeoman.app %>/templates/**/*.handlebars"]
+            }
+          }
         }
     });
 
@@ -341,6 +359,7 @@ module.exports = function (grunt) {
             'concurrent:server',
             'autoprefixer',
             'connect:livereload',
+            'ember_templates',
             'watch'
         ]);
     });
